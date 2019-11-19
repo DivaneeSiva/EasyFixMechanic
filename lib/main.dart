@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'Login.dart';
+//import 'Home.dart';
 
 
 void main(){ 
@@ -13,7 +14,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-     title: 'Login app',
+     title: 'EasyFix',
      home: Login(), 
     );
   }

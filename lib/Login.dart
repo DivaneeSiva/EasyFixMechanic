@@ -32,7 +32,7 @@ class Login extends StatelessWidget {
                   Icon(Icons.lock, color: Colors.white), 'Password'),
                 Container(
                   width: 100.0,
-                  child: RaisedButton(onPressed:(){
+                  child: RaisedButton(onPressed:() {
                     Navigator.push(context,
                     MaterialPageRoute(builder: (context) => Home()),
                     );
@@ -52,7 +52,6 @@ class Login extends StatelessWidget {
 
       )
       );
-      //home: MyHomePage(title: 'Flutter Demo Home Page'),
-    
+      
   }
 }

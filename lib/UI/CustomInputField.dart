@@ -32,7 +32,7 @@ class CustomInputField extends StatelessWidget{
                              ),
                           
                           width:200.0,
-                          height: 60.0,
+                          height: 50.0,
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: TextField(
