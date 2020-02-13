@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mechanic/main.dart';
+
 
 import 'Sidebar/sidebar_layout.dart';
 
@@ -11,7 +13,8 @@ class HomePage extends StatelessWidget {
         scaffoldBackgroundColor: Colors.white,
         primaryColor: Colors.white
       ),
-      home: SideBarLayout(),
+      //widget
+     home: SideBarLayout(),
     );
       
   }
