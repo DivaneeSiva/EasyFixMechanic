@@ -121,6 +121,14 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
                        },
                      ),
                      MenuItem(
+                       icon: Icons.time_to_leave,
+                       title: "Non Emergency",
+                        onTap: (){
+                         onIconPressed();
+                         BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.NonEmergencyClickedEvent);
+                       },
+                     ),
+                     MenuItem(
                        icon: Icons.schedule,
                        title: "Schedule",
                         onTap: (){
@@ -137,7 +145,11 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
                      ),
                      MenuItem(
                        icon: Icons.settings,
-                       title: "Settings",
+                       title: "Profile",
+                         onTap: (){
+                         onIconPressed();
+                         BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.ProfileClickedEvent);
+                       },
                      ),
                      MenuItem(
                        icon: Icons.exit_to_app,

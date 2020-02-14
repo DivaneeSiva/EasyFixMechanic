@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'Home.dart';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
+
+final FirebaseAuth _auth = FirebaseAuth.instance;
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -29,28 +35,78 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
       TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
+      TextEditingController _editingController1 = TextEditingController();
+      TextEditingController _editingController2 = TextEditingController();
+      bool _isSigningIn = false; 
+       bool _showPassword = false;
 
       @override
       Widget build(BuildContext context) {
 
-        final emailField = TextField(
+        final mobileField = TextFormField(
           obscureText: false,
+          keyboardType: TextInputType.number,
           style: style,
+          controller: _editingController1,
           decoration: InputDecoration(
               contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
               hintText: "Mobile number",
               border:
                   OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
         );
+
+        //  String pattern = r'(^(?:[+0]9)?[0-9]{10,12}$)';
+        //   RegExp regExp = new RegExp(pattern);
+        //   if (!regExp.hasMatch(_phoneNumber.text)) {
+        //     Alert(
+        //       context: context,
+        //       title: "Phone number invalid!",
+        //       desc: "Enter a valid phone number!",
+        //       type: AlertType.warning,
+        //     ).show();
+        //     setState(() {
+        //       _isSigningIn = false;
+        //     });
+        //     return null;
+        //   }
+        //    var userDoc = await Firestore.instance
+        //       .collection("Customers")
+        //       .document(_phoneNumber.text)
+        //       .get();
+
+        //   if (userDoc.exists) {
+        //     Alert(
+        //       context: context,
+        //       title: "User exits",
+        //       desc: "A user already exist for this phone number! try again !!",
+        //       type: AlertType.error,
+        //     ).show();
+        //     setState(() {
+        //       _isSigningIn = false;
+        //     });
+        //     return null ;
+        //   }
+
         final passwordField = TextField(
-          obscureText: true,
+          obscureText: !_showPassword,
           style: style,
+          controller: _editingController2,
           decoration: InputDecoration(
               contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
               hintText: "Password",
+              suffixIcon: GestureDetector(
+              onTap: () {
+                setState(() {
+                  _showPassword = !_showPassword;
+                });
+              },
+              child: Icon(
+                _showPassword ? Icons.visibility : Icons.visibility_off,
+              )),
               border:
                   OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
         );
+
         final loginButon = Material(
           elevation: 5.0,
           borderRadius: BorderRadius.circular(30.0),
@@ -58,11 +114,47 @@ class _MyHomePageState extends State<MyHomePage> {
           child: MaterialButton(
             minWidth: MediaQuery.of(context).size.width,
             padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-            onPressed: () {
+            onPressed: () async {
+              setState(() {
+            _isSigningIn = true;
+          });
+          var userDoc = await Firestore.instance
+              .collection("mechanic")
+              .document(_editingController1.text)
+              .get();
+
+          if (userDoc.exists) {
+            if (userDoc.data['password'] != _editingController2.text) {
+              Alert(
+                context: context,
+                title: "Password doesn't match!",
+                desc: "",
+                type: AlertType.error,
+              ).show();
+              setState(() {
+                _isSigningIn = false;
+              });
+              return;
+            } else {
+
               Navigator.push(context, 
               MaterialPageRoute(builder: (context)=>HomePage()),
               );
+            }
+            } else {
+            Alert(
+              context: context,
+              title: "You are not registered!",
+              desc: "please register!",
+              type: AlertType.error,
+            ).show();
+            setState(() {
+              _isSigningIn = false;
+            });
+            return;
+          }
             },
+
             child: Text("Login",
                 textAlign: TextAlign.center,
                 style: style.copyWith(
@@ -89,7 +181,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       Logo(),
                     //),
                     SizedBox(height: 45.0),
-                    emailField,
+                    mobileField,
                     SizedBox(height: 25.0),
                     passwordField,
                     SizedBox(
