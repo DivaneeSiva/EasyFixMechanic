@@ -12,7 +12,7 @@ String dddsn;
 
 class MyHomePage extends StatelessWidget with NavigationStates {
   String userDoc;
-  MyHomePage({ this.userDoc});
+  MyHomePage({this.userDoc});
 
   @override
   Widget build(BuildContext context) {
@@ -34,8 +34,6 @@ class MyHomePage extends StatelessWidget with NavigationStates {
 class ListPage extends StatefulWidget {
   String userDoc;
   ListPage(this.userDoc);
-
-  
 
   @override
   _ListPageState createState() => _ListPageState();
@@ -86,29 +84,37 @@ class _ListPageState extends State<ListPage> {
     switch (ds.data["state"]) {
       case 0:
         return ListTile(
-            title: Text(ds.data["name"] + ds.data["state"].toString()),
+            title: Text(
+              ds.data["name"], // + ds.data["state"].toString(),
+              style: TextStyle(fontWeight: FontWeight.w900, fontSize: 20),
+            ),
             onTap: () => navigateToDetail(ds));
       case 1:
         return ListTile(
-            title: Text(ds.data["Current_Phone"] + ds.data["state"].toString()),
+            title: Text(
+              ds.data["Current_Phone"], //+ ds.data["state"].toString(),
+              style: TextStyle(fontWeight: FontWeight.w900, fontSize: 20),
+            ),
             onTap: () => navigateToDetail(ds));
       case 2:
         return Container();
-        // return ListTile(title: Text(ds.data["name"] + ds.data["state"].toString()));
+      // return ListTile(title: Text(ds.data["name"] + ds.data["state"].toString()));
+      case 3:
+        return Container();
+
       default:
         return Center(
-        child:Container( 
-        child: Text("No requests!", 
-        style:TextStyle(fontWeight: FontWeight.w900, fontSize: 28),
-        
-      ),
-      color: Colors.blue[100],
-      alignment:Alignment.center,
-      width: 200,
-      height: 100,
-      
-    ),   
-    );
+          child: Container(
+            child: Text(
+              "No requests!",
+              style: TextStyle(fontWeight: FontWeight.w900, fontSize: 20),
+            ),
+            color: Colors.blue[100],
+            alignment: Alignment.center,
+            width: 200,
+            height: 100,
+          ),
+        );
     }
   }
 }
@@ -118,15 +124,13 @@ class DetailPage extends StatefulWidget with NavigationStates {
 
   DetailPage({this.post});
 
-  
-
   @override
   _State createState() => _State();
 }
 
 class _State extends State<DetailPage> {
   var firestore = Firestore.instance;
-  bool _state= false;
+  bool _state = false;
 
   @override
   Widget build(BuildContext context) {
@@ -204,12 +208,11 @@ class _State extends State<DetailPage> {
                                 onPressed: () {
                                   widget.post.reference
                                       .updateData({"state": 1});
-                                      Navigator.push(
+                                  Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => MapPage()),
                                   );
-                                      
                                 },
                                 shape: new RoundedRectangleBorder(
                                     borderRadius:
@@ -227,13 +230,49 @@ class _State extends State<DetailPage> {
                                 textColor: Colors.white,
                                 color: Colors.red,
                                 onPressed: () {
-                                  widget.post.reference
-                                      .updateData({"state": 2});
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => HomePage()),
-                                  );
+                                  // widget.post.reference
+                                  //     .updateData({"state": 2});
+                                  // Navigator.push(
+                                  //   context,
+                                  //   MaterialPageRoute(
+                                  //       builder: (context) => HomePage()),
+                                  //);
+                                  showDialog(
+                                      context: context,
+                                      barrierDismissible: false,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: Text("confirm"),
+                                          content:
+                                              Text("Do you want to reject"),
+                                          actions: [
+                                            FlatButton(
+                                              child: Text("yes"),
+                                              onPressed: () {
+                                                widget.post.reference
+                                                    .updateData({"state": 2});
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          HomePage()),
+                                                );
+                                              },
+                                            ),
+                                            FlatButton(
+                                              child: Text("No"),
+                                              onPressed: () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          DetailPage()),
+                                                );
+                                              },
+                                            )
+                                          ],
+                                        );
+                                      });
 
                                   // setState(() {
                                   //   _status = true;
@@ -251,8 +290,7 @@ class _State extends State<DetailPage> {
                       ),
                     )
                   ],
-                )
-                )
+                ))
           ]),
         ]),
       ),
@@ -264,7 +302,7 @@ class _State extends State<DetailPage> {
       firestore
           .collection('mechanic_request')
           .document(widget.post.documentID)
-          .updateData({'state':""});
+          .updateData({'state': ""});
     } catch (e) {
       print(e.toString());
     }

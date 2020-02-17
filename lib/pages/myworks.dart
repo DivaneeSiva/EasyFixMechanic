@@ -22,7 +22,7 @@ class MyWorksPage extends StatelessWidget with NavigationStates {
         centerTitle: true,
 
         title: Text(
-          'Notifications',
+          'Works...',
         ),
 
         //style:TextStyle(fontWeight: FontWeight.w900, fontSize: 28),
@@ -91,28 +91,21 @@ class _ListPageState extends State<ListPage> {
       //       onTap: () => navigateToDetail(ds));
       case 1:
         return ListTile(
-            title: Text(ds.data["Current_Phone"] + ds.data["state"].toString()),
+            title: Text(ds.data["Current_Phone"],// + ds.data["state"].toString(),
+            style:TextStyle(fontWeight: FontWeight.w900, fontSize: 20),
+            ),
             onTap: () => navigateToDetail(ds));
       case 2:
         return Container();
         // return ListTile(title: Text(ds.data["name"] + ds.data["state"].toString()));
       case 3:
         return ListTile(
-            title: Text(ds.data["Current_Phone"] + ds.data["state"].toString()));
+            title: Text(ds.data["Current_Phone"],// + ds.data["state"].toString(),
+            style:TextStyle(fontWeight: FontWeight.w900, fontSize: 20),
+            )
+            );
       default:
-        return Center(
-        child:Container( 
-        child: Text("No works!", 
-        style:TextStyle(fontWeight: FontWeight.w900, fontSize: 28),
-        
-      ),
-      color: Colors.blue[100],
-      alignment:Alignment.center,
-      width: 200,
-      height: 100,
-      
-    ),   
-    );
+        return Container();
         
     }
   }
@@ -212,7 +205,7 @@ class _State extends State<DetailPage> {
                                       Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => RatePage()),
+                                        builder: (context) => HomePage()),
                                   );
                                       
                                 },

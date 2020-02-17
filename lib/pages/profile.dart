@@ -4,6 +4,8 @@ import '../Home.dart';
 import '../bloc.navigation_bloc/navigation_bloc.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 // import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 // import 'package:image_picker/image_picker.dart';
 // import 'package:firebase_storage/firebase_storage.dart';
@@ -17,32 +19,48 @@ class ProfilePage extends StatefulWidget with NavigationStates {
   _ProfilePageState createState() => _ProfilePageState();
 }
 
+
+
 class _ProfilePageState extends State<ProfilePage> {
+
+  String docID;
+
+  
+
+  getDocId() async 
+  {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      setState(() {
+        docID = prefs.getString('docID');
+      });
+
+  }
+  String userDoc;
+  _ProfilePageState({this.userDoc});
+
   bool _isSigningIn = true;
   bool _status = true;
   final FocusNode myFocusNode = FocusNode();
   //File _image;
+  var dbRef  = Firestore.instance;
 
-Future getRequests() async {
-    var firestore = Firestore.instance;
-
-    QuerySnapshot qn = await firestore
-        .collection("users")
-        .where("email" == widget.userDoc)
-       // .where("machenic", isEqualTo: widget.userDoc  )
-        .getDocuments();
-
-    return qn.documents;
-  }
+ 
 
 
   @override
   void initState() {
+    getDocId();
     
     super.initState();
   }
 
   @override
+  
+  // var firestore = Firestore.instance
+  //       .collection('users')
+  //       .where("userType", isEqualTo:"mechanic" && DocumentSnapshot, isEqualTo: )
+  //       .getDocuments();
+
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
@@ -66,11 +84,26 @@ Future getRequests() async {
                   );
                 },
               ),
-            ]),
+            ]
+            ),
         body: Container(
           color: Colors.white,
           child: ListView(children: <Widget>[
-            Column(
+            StreamBuilder(
+              stream: dbRef.collection('users').document(docID).snapshots(),
+              builder: (context,snapshot){
+                if(snapshot.connectionState == ConnectionState.active)
+                {
+                  if(snapshot.data == null || !(snapshot.data.exists))
+                    {
+                      print("printing user id");
+                      print(userDoc);
+                      print("printing data");
+                      print(snapshot.data["address"]);
+                    }
+                    else
+                    {
+                        return Column(
               children: <Widget>[
                 Container(
                   height: 250.0,
@@ -180,7 +213,7 @@ Future getRequests() async {
                                 Flexible(
                                   child: TextField(
                                     decoration: const InputDecoration(
-                                      hintText: 'Enter name',
+                                     // hintText: snapshot.data['mechanic_name'].toString() ,
                                     ),
                                     enabled: !_status,
                                     autofocus: !_status,
@@ -334,7 +367,15 @@ Future getRequests() async {
                   ),
                 )
               ],
-            ),
+            );
+
+                    }
+                }
+                else{
+                  return CircularProgressIndicator();
+                }
+              }),
+            
           ]),
         ));
   }

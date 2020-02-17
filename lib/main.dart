@@ -3,6 +3,9 @@ import 'package:mechanic/Home.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -38,7 +41,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
-  TextEditingController _emailControllre = TextEditingController();
+  TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   bool _isSigningIn = false;
   bool _showPassword = false;
@@ -46,6 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
   String _password;
 
   var formkey = new GlobalKey<FormState>();
+  bool _autoValidate = false;
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +57,7 @@ class _MyHomePageState extends State<MyHomePage> {
       keyboardType: TextInputType.emailAddress,
       obscureText: false,
       style: style,
-      controller: _emailControllre,
+      controller: _emailController,
       decoration: InputDecoration(
           contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
           hintText: "Email Address",
@@ -106,10 +110,10 @@ class _MyHomePageState extends State<MyHomePage> {
             _isSigningIn = true;
           });
 
-          print(_emailControllre.text.toString());
+          print(_emailController.text.toString());
           var userDoc = await Firestore.instance
               .collection("users")
-              .where("email", isEqualTo: _emailControllre.text.trim())
+              .where("email", isEqualTo: _emailController.text.trim())
               .getDocuments();
 
           print(userDoc.documents.toString());
@@ -120,14 +124,18 @@ class _MyHomePageState extends State<MyHomePage> {
                 Alert(
                   context: context,
                   title: "Invalid",
-                  desc: "Check the emailID",
+                  desc: "Invalid Email Or password",
                   type: AlertType.error,
                 ).show();
                 setState(() {
                   _isSigningIn = false;
+                  _emailController.clear();
+                  _passwordController.clear();
                 });
                 return;
               } else {
+                  SharedPreferences prefs = await SharedPreferences.getInstance();
+
                 if (_email != null && _password != null) {
                   FirebaseAuth.instance
                       .signInWithEmailAndPassword(
@@ -145,6 +153,8 @@ class _MyHomePageState extends State<MyHomePage> {
                               MaterialPageRoute(
                                   builder: (context) => HomePage(
                                       userDoc: qs.documents.first.documentID)));
+                                                        prefs.setString('docID', qs.documents.first.documentID);
+
                         });
                       });
                     });
@@ -155,6 +165,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       desc: "Get registerd",
                       type: AlertType.error,
                     ).show();
+                    _emailController.clear();
+                    _passwordController.clear();
                   });
                 } else {}
               }
@@ -167,10 +179,14 @@ class _MyHomePageState extends State<MyHomePage> {
               ).show();
               setState(() {
                 _isSigningIn = false;
+                 _emailController.clear();
+                 _passwordController.clear();
               });
               return;
             }
-          }
+          } 
+            
+          
         },
         child: Text(
           "Log in",
