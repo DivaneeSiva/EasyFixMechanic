@@ -6,7 +6,11 @@ import '../bloc.navigation_bloc/navigation_bloc.dart';
 
 
 class SideBarLayout extends StatelessWidget {
+  String userDoc;
+  SideBarLayout({this.userDoc});
+  
   @override
+
   Widget build(BuildContext context) {
     return Scaffold(
       body: BlocProvider<NavigationBloc>(
@@ -19,7 +23,7 @@ class SideBarLayout extends StatelessWidget {
                   },
                 
                 ),
-                SideBar(),
+                SideBar(userDoc:userDoc),
               ]
             ),
           ), 

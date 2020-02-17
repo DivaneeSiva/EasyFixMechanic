@@ -1,24 +1,46 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mechanic/pages/profile.dart';
+
 import '../Sidebar/menu_item.dart';
 import '../bloc.navigation_bloc/navigation_bloc.dart';
-import 'package:rxdart/rxdart.dart';// for published subject
+import 'package:rxdart/rxdart.dart';
+
+import '../Home.dart';// for published subject
 
 class SideBar extends StatefulWidget {
-
+   String userDoc;
+   SideBar({this.userDoc});
   @override
-  _SideBarState createState() => _SideBarState();
+  SideBarState createState() => SideBarState();
 }
 
-class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<SideBar> {
+class SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<SideBar> {
+  String userDoc;
+   SideBarState({this.userDoc});
+
   AnimationController _animationController;
   StreamController<bool> isSidebarOpenedStreamController;
   Stream<bool>isSideBarOpenedStream;
   StreamSink<bool> isSidebarOpenedSink;
   
   final _animationDuration = const Duration(milliseconds: 500);
+
+  Future getRequests() async {
+    var firestore = Firestore.instance;
+
+    QuerySnapshot qn = await firestore
+        .collection("users")
+        //.where()
+       // .where("machenic", isEqualTo: widget.userDoc  )
+        .getDocuments();
+
+    return qn.documents;
+  }
+  
 
   @override
   void initState(){
@@ -50,9 +72,10 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
     }
 
   }
-
+    
   @override
   Widget build(BuildContext context) {
+    print(widget.userDoc);
     final screenWidth = MediaQuery.of(context).size.width;
 
     return StreamBuilder<bool>(
@@ -108,32 +131,54 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
                        icon: Icons.home,
                        title: "Home",
                        onTap: (){
-                         onIconPressed();
-                         BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.HomePageClickedEvent);
-                       },
+                          // Navigator.pop(context);
+                          //  Navigator.push(
+                          //    context,
+                          //  MaterialPageRoute(
+                          //   builder: (BuildContext context) => HomePage()));
+                       
+                
+                            onIconPressed();
+                           BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.HomePageClickedEvent);
+                        },
                      ),
                      MenuItem(
                        icon: Icons.work,
                        title: "My works",
                         onTap: (){
-                         onIconPressed();
-                         BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.MyWorksClickedEvent);
+                          // Navigator.pop(context);
+                          //  Navigator.push(
+                          //    context,
+                          //  MaterialPageRoute(
+                          //   builder: (BuildContext context) => MyWorksPage()));
+                          onIconPressed();
+                          BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.MyWorksClickedEvent);
                        },
                      ),
                      MenuItem(
                        icon: Icons.time_to_leave,
                        title: "Non Emergency",
                         onTap: (){
-                         onIconPressed();
-                         BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.NonEmergencyClickedEvent);
+                          //  Navigator.pop(context);
+                          //   Navigator.push(
+                          //    context,
+                          //   MaterialPageRoute(
+                          //    builder: (BuildContext context) => NonEmergencyPage()));
+                          onIconPressed();
+                          BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.NonEmergencyClickedEvent);
                        },
                      ),
                      MenuItem(
                        icon: Icons.schedule,
                        title: "Schedule",
                         onTap: (){
-                         onIconPressed();
-                         BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.ScheduleClickedEvent);
+                          // Navigator.pop(context);
+                          //  Navigator.push(
+                          //    context,
+                          //  MaterialPageRoute(
+                          //   builder: (BuildContext context) => SchedulePage()));
+                          onIconPressed();
+                          BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.ScheduleClickedEvent);
                        },
                      ),
                      Divider(
@@ -147,13 +192,25 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
                        icon: Icons.settings,
                        title: "Profile",
                          onTap: (){
-                         onIconPressed();
-                         BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.ProfileClickedEvent);
+                             Navigator.pop(context);
+                             Navigator.push(
+                               context,
+                             MaterialPageRoute(
+                              builder: (BuildContext context) => ProfilePage(userDoc: widget.userDoc)));
+                          // onIconPressed();
+                          //  BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.ProfileClickedEvent);
                        },
                      ),
                      MenuItem(
                        icon: Icons.exit_to_app,
                        title: "Logout",
+                        onTap: (){
+                           Navigator.pop(context);
+                           Navigator.push(
+                             context,
+                           MaterialPageRoute(
+                            builder: (BuildContext context) => HomePage()));
+                        },
                      ),
 
                    ],

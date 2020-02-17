@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+
 import '../pages/profile.dart';
 import '../pages/NonEmergency.dart';
 import '../pages/homepage.dart';
@@ -18,13 +19,13 @@ abstract class NavigationStates{}
 class NavigationBloc extends Bloc<NavigationEvents, NavigationStates>{
   @override
   
-  NavigationStates get initialState => HomePage();
+  NavigationStates get initialState => MyHomePage();
 
   @override
   Stream<NavigationStates> mapEventToState(NavigationEvents event) async* {
     switch (event) {
       case NavigationEvents.HomePageClickedEvent: 
-        yield HomePage();
+        yield MyHomePage();
         break;
       case NavigationEvents.MyWorksClickedEvent: 
         yield MyWorksPage();

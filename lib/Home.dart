@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:mechanic/main.dart';
+
 
 
 import 'Sidebar/sidebar_layout.dart';
 
 
 class HomePage extends StatelessWidget {
+   String userDoc;
+   HomePage({this.userDoc});
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -14,7 +16,7 @@ class HomePage extends StatelessWidget {
         primaryColor: Colors.white
       ),
       //widget
-     home: SideBarLayout(),
+     home: SideBarLayout(userDoc:userDoc),
     );
       
   }

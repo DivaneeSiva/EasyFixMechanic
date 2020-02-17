@@ -20,6 +20,7 @@ dependencies:
   flutter:
     sdk: flutter
   firebase_core: ^0.4.0+9
+  geocoder: 
 
   # Add the dependency for the FlutterFire plugin for Google Analytics
   firebase_analytics: ^5.0.2
@@ -40,13 +41,25 @@ dependencies:
   image_picker: ^0.6.1+4
   firebase_storage: 3.1.1
   file_picker: 1.4.3+2
+
+  shared_preferences: ^0.5.6+1
+  google_maps_flutter: 0.5.23+1
+  google_map_polyline:
+  location: 2.4.0
+
+  flutter_launcher_icons: 0.7.4
+
+  flutter_rating_bar: 3.0.1+1
   
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "Images/logo.png"
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
@@ -61,6 +74,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - Images/logo.png
+    - Images/perIcon.png
   #  - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
