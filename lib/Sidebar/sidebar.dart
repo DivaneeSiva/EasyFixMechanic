@@ -9,7 +9,8 @@ import '../Sidebar/menu_item.dart';
 import '../bloc.navigation_bloc/navigation_bloc.dart';
 import 'package:rxdart/rxdart.dart';
 
-import '../Home.dart'; // for published subject
+import '../Home.dart';
+import '../main.dart'; // for published subject
 
 class SideBar extends StatefulWidget {
   String userDoc;
@@ -19,6 +20,7 @@ class SideBar extends StatefulWidget {
 }
 
 class SideBarState extends State<SideBar>
+
     with SingleTickerProviderStateMixin<SideBar> {
   String userDoc;
   SideBarState({this.userDoc});
@@ -32,8 +34,11 @@ class SideBarState extends State<SideBar>
   }
 
   AnimationController _animationController;
+  //stream controller
   StreamController<bool> isSidebarOpenedStreamController;
+  //async data event
   Stream<bool> isSideBarOpenedStream;
+  //accepts stream events sync and async
   StreamSink<bool> isSidebarOpenedSink;
 
   final _animationDuration = const Duration(milliseconds: 500);
@@ -52,6 +57,7 @@ class SideBarState extends State<SideBar>
   }
 
   @override
+  //called when object is removed
   void dispose() {
     _animationController.dispose();
     isSidebarOpenedStreamController.close();
@@ -60,7 +66,7 @@ class SideBarState extends State<SideBar>
   }
 
   void onIconPressed() {
-    final animationStatus = _animationController.status;
+    final animationStatus = _animationController.status; //current status of the animation controller
     final isAnimationCompleted = animationStatus == AnimationStatus.completed;
 
     if (isAnimationCompleted) {
@@ -89,151 +95,171 @@ class SideBarState extends State<SideBar>
           right: isSideBarOpenedAsync.data ? 0 : screenWidth - 45,
           child: Row(
             children: <Widget>[
+              
               //to make the sidebar expanded
-              Expanded(
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  color: const Color(0xFF262AAA),
-                  child: Column(
-                    children: <Widget>[
-                      SizedBox(
-                        height: 100,
-                      ),
-                      ListTile(
-                        title: Text(
-                          "bhanuka",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 25,
-                              fontWeight: FontWeight.w800),
-                        ),
-                        subtitle: Text(
-                          "bhanuka95191@gmail.com",
-                          style: TextStyle(
-                            color: Color(0xFF1BB5FD),
-                            fontSize: 20,
+              StreamBuilder(
+                stream: dbRef.collection('users').document(docID).snapshots(),
+                builder: (context,snapshot){
+                   if(snapshot.connectionState == ConnectionState.active)
+                {
+                  if(snapshot.data == null || !(snapshot.data.exists))
+                    {
+                      print("printing user id");
+                      print(userDoc);
+                      print("printing data");
+                      print(snapshot.data["address"]);
+                    }
+                    else
+                    {
+                      print("printing doc");
+                      print(snapshot.data.data);
+                  return Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      color: const Color(0xFF262AAA),
+                      child: Column(
+                        children: <Widget>[
+                          SizedBox(
+                            height: 100,
                           ),
-                        ),
-                        leading: CircleAvatar(
-                          child: Container(
-                              width: 145.0,
-                              height: 145.0,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                image: DecorationImage(
-                                    image:
-                                        ExactAssetImage('Images/perIcon.png'),
-                                    fit: BoxFit.cover),
-                              )),
-                          //  Icon(
-                          //    Icons.perm_identity,
-                          //    color: Colors.white,
+                          ListTile(
+                            title: Text(
+                              snapshot.data.data["Name"].toString() ,
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.w800),
+                            ),
+                            subtitle: Text(
+                              snapshot.data.data["email"].toString() ,
+                              style: TextStyle(
+                                color: Color(0xFF1BB5FD),
+                                fontSize: 20,
+                              ),
+                            ),
+                            leading: CircleAvatar(
+                              child: Container(
+                                  width: 145.0,
+                                  height: 145.0,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    image: DecorationImage(
+                                        image:
+                                            ExactAssetImage('Images/perIcon.png'),
+                                        fit: BoxFit.cover),
+                                  )),
+                              //  Icon(
+                              //    Icons.perm_identity,
+                              //    color: Colors.white,
 
-                          //  ),
-                          radius: 30,
-                        ),
-                      ),
-                      Divider(
-                        height: 64,
-                        thickness: 0.5,
-                        color: Colors.white.withOpacity(0.3),
-                        indent: 32,
-                        endIndent: 32,
-                      ),
-                      MenuItem(
-                        icon: Icons.home,
-                        title: "Home",
-                        onTap: () {
-                          // Navigator.pop(context);
-                          //  Navigator.push(
-                          //    context,
-                          //  MaterialPageRoute(
-                          //   builder: (BuildContext context) => HomePage()));
+                              //  ),
+                              radius: 30,
+                            ),
+                          ),
+                          Divider(
+                            height: 64,
+                            thickness: 0.5,
+                            color: Colors.white.withOpacity(0.3),
+                            indent: 32,
+                            endIndent: 32,
+                          ),
+                          MenuItem(
+                            icon: Icons.home,
+                            title: "Home",
+                            onTap: () {
+                              // Navigator.pop(context);
+                              //  Navigator.push(
+                              //    context,
+                              //  MaterialPageRoute(
+                              //   builder: (BuildContext context) => HomePage()));
 
-                          onIconPressed();
-                          BlocProvider.of<NavigationBloc>(context)
-                              .add(NavigationEvents.HomePageClickedEvent);
-                        },
+                              onIconPressed();
+                              BlocProvider.of<NavigationBloc>(context)
+                                  .add(NavigationEvents.HomePageClickedEvent);
+                            },
+                          ),
+                          MenuItem(
+                            icon: Icons.work,
+                            title: "My works",
+                            onTap: () {
+                              // Navigator.pop(context);
+                              //  Navigator.push(
+                              //    context,
+                              //  MaterialPageRoute(
+                              //   builder: (BuildContext context) => MyWorksPage()));
+                              onIconPressed();
+                              BlocProvider.of<NavigationBloc>(context)
+                                  .add(NavigationEvents.MyWorksClickedEvent);
+                            },
+                          ),
+                          MenuItem(
+                            icon: Icons.time_to_leave,
+                            title: "Non Emergency",
+                            onTap: () {
+                              //  Navigator.pop(context);
+                              //   Navigator.push(
+                              //    context,
+                              //   MaterialPageRoute(
+                              //    builder: (BuildContext context) => NonEmergencyPage()));
+                              onIconPressed();
+                              BlocProvider.of<NavigationBloc>(context)
+                                  .add(NavigationEvents.NonEmergencyClickedEvent);
+                            },
+                          ),
+                          MenuItem(
+                            icon: Icons.schedule,
+                            title: "Schedule",
+                            onTap: () {
+                              // Navigator.pop(context);
+                              //  Navigator.push(
+                              //    context,
+                              //  MaterialPageRoute(
+                              //   builder: (BuildContext context) => SchedulePage()));
+                              onIconPressed();
+                              BlocProvider.of<NavigationBloc>(context)
+                                  .add(NavigationEvents.ScheduleClickedEvent);
+                            },
+                          ),
+                          Divider(
+                            height: 64,
+                            thickness: 0.5,
+                            color: Colors.white.withOpacity(0.3),
+                            indent: 32,
+                            endIndent: 32,
+                          ),
+                          MenuItem(
+                            icon: Icons.settings,
+                            title: "Profile",
+                            onTap: () {
+                              Navigator.pop(context);
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          ProfilePage(userDoc: widget.userDoc)));
+                              // onIconPressed();
+                              //  BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.ProfileClickedEvent);
+                            },
+                          ),
+                          MenuItem(
+                            icon: Icons.exit_to_app,
+                            title: "Logout",
+                            onTap: () {
+                              Navigator.pop(context);
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          MyHomePage()));
+                            },
+                          ),
+                        ],
                       ),
-                      MenuItem(
-                        icon: Icons.work,
-                        title: "My works",
-                        onTap: () {
-                          // Navigator.pop(context);
-                          //  Navigator.push(
-                          //    context,
-                          //  MaterialPageRoute(
-                          //   builder: (BuildContext context) => MyWorksPage()));
-                          onIconPressed();
-                          BlocProvider.of<NavigationBloc>(context)
-                              .add(NavigationEvents.MyWorksClickedEvent);
-                        },
-                      ),
-                      MenuItem(
-                        icon: Icons.time_to_leave,
-                        title: "Non Emergency",
-                        onTap: () {
-                          //  Navigator.pop(context);
-                          //   Navigator.push(
-                          //    context,
-                          //   MaterialPageRoute(
-                          //    builder: (BuildContext context) => NonEmergencyPage()));
-                          onIconPressed();
-                          BlocProvider.of<NavigationBloc>(context)
-                              .add(NavigationEvents.NonEmergencyClickedEvent);
-                        },
-                      ),
-                      MenuItem(
-                        icon: Icons.schedule,
-                        title: "Schedule",
-                        onTap: () {
-                          // Navigator.pop(context);
-                          //  Navigator.push(
-                          //    context,
-                          //  MaterialPageRoute(
-                          //   builder: (BuildContext context) => SchedulePage()));
-                          onIconPressed();
-                          BlocProvider.of<NavigationBloc>(context)
-                              .add(NavigationEvents.ScheduleClickedEvent);
-                        },
-                      ),
-                      Divider(
-                        height: 64,
-                        thickness: 0.5,
-                        color: Colors.white.withOpacity(0.3),
-                        indent: 32,
-                        endIndent: 32,
-                      ),
-                      MenuItem(
-                        icon: Icons.settings,
-                        title: "Profile",
-                        onTap: () {
-                          Navigator.pop(context);
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      ProfilePage(userDoc: widget.userDoc)));
-                          // onIconPressed();
-                          //  BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.ProfileClickedEvent);
-                        },
-                      ),
-                      MenuItem(
-                        icon: Icons.exit_to_app,
-                        title: "Logout",
-                        onTap: () {
-                          Navigator.pop(context);
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      HomePage()));
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+                    ),
+                  );
+                }
+                }
+                }),
 
               //to show the home page when the side bar is expanded
               Align(

@@ -8,7 +8,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'map.dart';
 import '../Home.dart';
 
-String dddsn;
+//String dddsn;
 
 class MyHomePage extends StatelessWidget with NavigationStates {
   String userDoc;
@@ -103,18 +103,19 @@ class _ListPageState extends State<ListPage> {
         return Container();
 
       default:
-        return Center(
-          child: Container(
-            child: Text(
-              "No requests!",
-              style: TextStyle(fontWeight: FontWeight.w900, fontSize: 20),
-            ),
-            color: Colors.blue[100],
-            alignment: Alignment.center,
-            width: 200,
-            height: 100,
-          ),
-        );
+        return Container();
+        // return Center(
+        //   child: Container(
+        //     child: Text(
+        //       "No requests!",
+        //       style: TextStyle(fontWeight: FontWeight.w900, fontSize: 20),
+        //     ),
+        //     color: Colors.blue[100],
+        //     alignment: Alignment.center,
+        //     width: 200,
+        //     height: 100,
+        //   ),
+        // );
     }
   }
 }
@@ -167,7 +168,8 @@ class _State extends State<DetailPage> {
       //       Navigator.push(context,
       //           MaterialPageRoute(builder: (context)=>HomePage()),
 
-      body: Container(
+    body: Builder(builder: (context){
+        return Container(
         color: Colors.blue,
         child: ListView(children: <Widget>[
           Column(children: <Widget>[
@@ -186,7 +188,7 @@ class _State extends State<DetailPage> {
                         child: Card(
                             child: ListTile(
                           title: Text(widget.post.data["Vehicle_Type"]),
-                          subtitle: Text(widget.post.data["vehicle_Number"]),
+                          subtitle: Text(widget.post.data["Trouble"]),
                         )),
                       ),
                     ),
@@ -208,11 +210,14 @@ class _State extends State<DetailPage> {
                                 onPressed: () {
                                   widget.post.reference
                                       .updateData({"state": 1});
+                                     
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => MapPage()),
+                                        builder: (context) => HomePage()),
                                   );
+                                   SnackBar mySnack = SnackBar(content: Text("Accepted"));
+                                                Scaffold.of(context).showSnackBar(mySnack);
                                 },
                                 shape: new RoundedRectangleBorder(
                                     borderRadius:
@@ -249,14 +254,18 @@ class _State extends State<DetailPage> {
                                             FlatButton(
                                               child: Text("yes"),
                                               onPressed: () {
+                                                
                                                 widget.post.reference
                                                     .updateData({"state": 2});
+                                                   
                                                 Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
                                                       builder: (context) =>
                                                           HomePage()),
                                                 );
+                                                 SnackBar mySnack = SnackBar(content: Text("Rejected"));
+                                                Scaffold.of(context).showSnackBar(mySnack);
                                               },
                                             ),
                                             FlatButton(
@@ -266,7 +275,7 @@ class _State extends State<DetailPage> {
                                                   context,
                                                   MaterialPageRoute(
                                                       builder: (context) =>
-                                                          DetailPage()),
+                                                          HomePage()),
                                                 );
                                               },
                                             )
@@ -293,7 +302,9 @@ class _State extends State<DetailPage> {
                 ))
           ]),
         ]),
-      ),
+      );
+    }
+    ),
     );
   }
 

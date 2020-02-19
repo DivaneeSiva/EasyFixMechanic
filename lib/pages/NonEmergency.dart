@@ -1,6 +1,6 @@
-import 'package:firebase_auth/firebase_auth.dart';
+//import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'dart:async';
+//import 'dart:async';
 import '../bloc.navigation_bloc/navigation_bloc.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -215,6 +215,8 @@ class _State extends State<DetailPage> {
                                 onPressed: () {
                                   widget.post.reference
                                       .updateData({"state": 1});
+                                      SnackBar mySnack = SnackBar(content: Text("Accepted"));
+                                                Scaffold.of(context).showSnackBar(mySnack);
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -257,6 +259,8 @@ class _State extends State<DetailPage> {
                                               onPressed: () {
                                                 widget.post.reference
                                                     .updateData({"state": 2});
+                                                    SnackBar mySnack = SnackBar(content: Text("Rejected"));
+                                                Scaffold.of(context).showSnackBar(mySnack);
                                                 Navigator.push(
                                                   context,
                                                   MaterialPageRoute(

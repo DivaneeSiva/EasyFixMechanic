@@ -32,6 +32,7 @@ class _MyAppState extends State<MyApp> {
 }
 
 class MyHomePage extends StatefulWidget {
+  //constructor for homePage widget
   MyHomePage({Key key, this.title}) : super(key: key);
 
   final String title;
@@ -48,29 +49,39 @@ class _MyHomePageState extends State<MyHomePage> {
   String _email;
   String _password;
 
+  
+//for debugging perpose
   var formkey = new GlobalKey<FormState>();
-  bool _autoValidate = false;
+  
 
   @override
   Widget build(BuildContext context) {
-    final phoneField = TextFormField(
+
+    //email field
+    final emailField = TextFormField(
       keyboardType: TextInputType.emailAddress,
+     //show/hide text
       obscureText: false,
       style: style,
       controller: _emailController,
+
       decoration: InputDecoration(
           contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
           hintText: "Email Address",
           border:
               OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
-      validator: (value) => value.isEmpty ? 'Email can\'t be Empty' : null,
+      // validator: (value) => value.isEmpty ? 'Email can\'t be Empty' : null,
+        validator: (value) => value.isEmpty ? 'Email can\'t be Empty' : null,
+        
       onChanged: (val) {
+        
         setState(() {
           _email = val;
         });
       },
     );
 
+      //password field
     final passwordField = TextFormField(
       keyboardType: TextInputType.text,
       obscureText: !_showPassword,
@@ -98,6 +109,7 @@ class _MyHomePageState extends State<MyHomePage> {
       },
     );
 
+      //login button 
     final loginButon = Material(
       elevation: 5.0,
       borderRadius: BorderRadius.circular(30.0),
@@ -117,9 +129,11 @@ class _MyHomePageState extends State<MyHomePage> {
               .getDocuments();
 
           print(userDoc.documents.toString());
-
+            //returns true when no error
           if (formkey.currentState.validate()) {
+            //checking the presence of user
             if (userDoc.documents.length > 0) {
+              
               if (userDoc.documents.first.data['userType'] != "mechanic") {
                 Alert(
                   context: context,
@@ -185,7 +199,22 @@ class _MyHomePageState extends State<MyHomePage> {
               return;
             }
           } 
-            
+
+           String patttern =
+                r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+            RegExp regExp = new RegExp(patttern);
+            if (!regExp.hasMatch(_emailController.text)) {
+              Alert(
+                context: context,
+                title: "Email invalid!",
+                desc: "Enter a valid Email Address!",
+                type: AlertType.warning,
+              ).show();
+              setState(() {
+                _isSigningIn = false;
+              });
+              return;
+            }  
           
         },
         child: Text(
@@ -213,7 +242,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     fit: BoxFit.contain,
                   ),
                   SizedBox(height: 45.0),
-                  phoneField,
+                  emailField,
                   SizedBox(height: 25.0),
                   passwordField,
                   SizedBox(height: 35.0),
